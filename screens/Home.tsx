@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Text, View, Pressable, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -6,6 +6,7 @@ import Card from '../shared/card';
 import RatingHearts from '../shared/ratingHearts';
 import GameCover from '../shared/gameCover';
 import RawgAttribution from '../shared/rawgAttribution';
+import ReviewFilters, { filterAndSortReviews, type SortOrder } from '../shared/reviewFilters';
 import { MaterialIcons } from '@expo/vector-icons';
 import ReviewFormModal from '../shared/reviewFormModal';
 import { useAppTheme } from '../styles/theme';
@@ -20,6 +21,9 @@ const Home = ({ navigation }: Props) => {
     const { reviews, loaded, addReview } = useReviews();
     const { colors } = useAppTheme();
     const insets = useSafeAreaInsets();
+    const [query, setQuery] = useState('');
+    const [sort, setSort] = useState<SortOrder>('newest');
+    const visibleReviews = useMemo(() => filterAndSortReviews(reviews, query, sort), [reviews, query, sort]);
 
     const handleAdd = (review: ReviewInput) => {
       addReview(review);
@@ -37,16 +41,30 @@ const Home = ({ navigation }: Props) => {
         {!loaded ? (
           <ActivityIndicator color={colors.primary} style={styles.loading} />
         ) : (
+          <>
+          {reviews.length > 0 && (
+            <ReviewFilters query={query} onChangeQuery={setQuery} sort={sort} onChangeSort={setSort} />
+          )}
           <FlatList
-            data={reviews}
+            data={visibleReviews}
+            keyboardShouldPersistTaps="handled"
+            keyboardDismissMode="on-drag"
             contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 96 }]}
-            ListFooterComponent={reviews.some((r) => r.game) ? <RawgAttribution /> : undefined}
+            ListFooterComponent={visibleReviews.some((r) => r.game) ? <RawgAttribution /> : undefined}
             ListEmptyComponent={
-              <View style={styles.empty}>
-                <MaterialIcons name="sports-esports" size={56} color={colors.textMuted} />
-                <Text style={[styles.emptyTitle, { color: colors.text }]}>No reviews yet</Text>
-                <Text style={{ color: colors.textMuted }}>Tap + to review your first game.</Text>
-              </View>
+              reviews.length > 0 ? (
+                <View style={styles.empty}>
+                  <MaterialIcons name="search-off" size={56} color={colors.textMuted} />
+                  <Text style={[styles.emptyTitle, { color: colors.text }]}>No matches</Text>
+                  <Text style={{ color: colors.textMuted }}>No reviews match "{query.trim()}".</Text>
+                </View>
+              ) : (
+                <View style={styles.empty}>
+                  <MaterialIcons name="sports-esports" size={56} color={colors.textMuted} />
+                  <Text style={[styles.emptyTitle, { color: colors.text }]}>No reviews yet</Text>
+                  <Text style={{ color: colors.textMuted }}>Tap + to review your first game.</Text>
+                </View>
+              )
             }
             renderItem={({item}) => (
               <Pressable
@@ -67,6 +85,7 @@ const Home = ({ navigation }: Props) => {
               </Pressable>
             )}
           />
+          </>
         )}
         <Pressable
           onPress={() => setModalOpen(true)}
