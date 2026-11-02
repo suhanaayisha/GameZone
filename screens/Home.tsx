@@ -4,6 +4,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Card from '../shared/card';
 import RatingHearts from '../shared/ratingHearts';
+import GameCover from '../shared/gameCover';
+import RawgAttribution from '../shared/rawgAttribution';
 import { MaterialIcons } from '@expo/vector-icons';
 import ReviewFormModal from '../shared/reviewFormModal';
 import { useAppTheme } from '../styles/theme';
@@ -38,6 +40,7 @@ const Home = ({ navigation }: Props) => {
           <FlatList
             data={reviews}
             contentContainerStyle={[styles.list, { paddingBottom: insets.bottom + 96 }]}
+            ListFooterComponent={reviews.some((r) => r.game) ? <RawgAttribution /> : undefined}
             ListEmptyComponent={
               <View style={styles.empty}>
                 <MaterialIcons name="sports-esports" size={56} color={colors.textMuted} />
@@ -52,6 +55,7 @@ const Home = ({ navigation }: Props) => {
               >
                 <Card>
                   <View style={styles.row}>
+                    <GameCover uri={item.game?.coverUrl} size={64} />
                     <View style={styles.rowText}>
                       <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>{item.title}</Text>
                       <RatingHearts rating={item.rating} size={16} />
@@ -91,6 +95,7 @@ export const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 14,
   },
   rowText: {
     flex: 1,

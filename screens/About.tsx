@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 import Card from '../shared/card';
 import { useReviews } from '../hooks/useReviews';
 import { useAppTheme } from '../styles/theme';
+import RawgAttribution from '../shared/rawgAttribution';
 
 const About = () => {
     const { reviews } = useReviews();
@@ -41,12 +42,13 @@ const About = () => {
 
         <Card>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>How it works</Text>
-          <Text style={[styles.paragraph, { color: colors.text }]}>• Tap + on the home screen to review a game, then tap the hearts to rate it out of 5.</Text>
+          <Text style={[styles.paragraph, { color: colors.text }]}>• Tap + on the home screen and search for a game to pull in its cover, release date and genres. Then tap the hearts to rate it out of 5.</Text>
           <Text style={[styles.paragraph, { color: colors.text }]}>• Tap a review to read it, then use the pencil to edit it or the bin to delete it.</Text>
           <Text style={[styles.paragraph, { color: colors.text }]}>• Reviews are saved on this device, so they're still here next time you open the app.</Text>
           <Text style={[styles.paragraph, { color: colors.text }]}>• Switch between light and dark mode from the Appearance setting in the menu.</Text>
         </Card>
 
+        <RawgAttribution />
         <Text style={[styles.version, { color: colors.textMuted }]}>Version {Constants.expoConfig?.version ?? '1.0.0'}</Text>
       </ScrollView>
     );

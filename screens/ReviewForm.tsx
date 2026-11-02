@@ -4,11 +4,12 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import { DefaultButton as Button } from '../shared/button';
 import RatingHearts from '../shared/ratingHearts';
+import GameSearch from '../shared/gameSearch';
 import { useAppTheme } from '../styles/theme';
-import type { ReviewInput } from '../types/review';
+import type { GameInfo, ReviewInput } from '../types/review';
 
 const ReviewSchema = yup.object({
-    title: yup.string().required().min(4),
+    title: yup.string().required(),
     body: yup.string().required().min(8),
     rating: yup.string().required('pick a rating').test('is-num-1-5', 'rating must be a number between 1 to 5', (val) => {
         return parseInt(val, 10) < 6 && parseInt(val, 10) > 0;
@@ -33,23 +34,33 @@ const ReviewForm = ({ onSubmit, initialReview }: Props) => {
                 title: initialReview?.title ?? '',
                 body: initialReview?.body ?? '',
                 rating: initialReview ? String(initialReview.rating) : '',
+                game: (initialReview?.game ?? null) as GameInfo | null,
             }}
             validationSchema={ReviewSchema}
             onSubmit={(values, actions) => {
                 actions.resetForm()
-                onSubmit({ ...values, rating: parseInt(values.rating, 10) });
+                onSubmit({
+                    title: values.title,
+                    body: values.body,
+                    rating: parseInt(values.rating, 10),
+                    game: values.game ?? undefined,
+                });
             }}
            >
             {(props) => (
                 <View>
                     <Text style={labelStyle}>Game</Text>
-                    <TextInput
-                        style={inputStyle}
-                        placeholder={"Game title"}
-                        placeholderTextColor={colors.textMuted}
-                        onChangeText={props.handleChange('title')}
-                        value={props.values.title}
-                        onBlur={props.handleBlur('title')}
+                    <GameSearch
+                        title={props.values.title}
+                        game={props.values.game}
+                        onChangeTitle={(title) => {
+                            props.setFieldValue('title', title);
+                            // Editing the title unlinks any picked game.
+                            if (props.values.game) props.setFieldValue('game', null);
+                        }}
+                        onSelectGame={(game) => props.setFieldValue('game', game)}
+                        onBlur={() => props.setFieldTouched('title')}
+                        inputStyle={inputStyle}
                     />
                     <Text style={errorStyle}>{props.touched.title && props.errors.title}</Text>
 

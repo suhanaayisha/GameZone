@@ -1,9 +1,11 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { Text, View, ScrollView, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, Image, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MaterialIcons } from '@expo/vector-icons';
 import Card from '../shared/card';
 import RatingHearts from '../shared/ratingHearts';
+import RawgAttribution from '../shared/rawgAttribution';
+import { rawgGameUrl } from '../api/rawg';
 import ReviewFormModal from '../shared/reviewFormModal';
 import { confirm } from '../shared/confirm';
 import { useAppTheme } from '../styles/theme';
@@ -48,7 +50,8 @@ const ReviewDetails = ({ route, navigation }: Props) => {
     return null;
   }
 
-  const { title, rating, body } = review;
+  const { title, rating, body, game } = review;
+  const meta = game ? [game.released?.slice(0, 4), game.genres.slice(0, 3).join(', ')].filter(Boolean).join(' · ') : '';
     return (
       <ScrollView contentContainerStyle={styles.content}>
         <ReviewFormModal
@@ -56,9 +59,11 @@ const ReviewDetails = ({ route, navigation }: Props) => {
           visible={editing}
           onClose={() => setEditing(false)}
           onSubmit={handleUpdate}
-          initialReview={{ title, rating, body }}
+          initialReview={{ title, rating, body, game }}
         />
+        {game?.coverUrl && <Image source={{ uri: game.coverUrl }} style={styles.cover} />}
         <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+        {!!meta && <Text style={[styles.meta, { color: colors.textMuted }]}>{meta}</Text>}
         <View style={styles.rating}>
           <RatingHearts rating={rating} size={24} />
           <Text style={[styles.ratingText, { color: colors.textMuted }]}>{rating} / 5</Text>
@@ -66,6 +71,12 @@ const ReviewDetails = ({ route, navigation }: Props) => {
         <Card>
           <Text style={[styles.body, { color: colors.text }]}>{body}</Text>
         </Card>
+        {game && game.platforms.length > 0 && (
+          <Text style={[styles.platforms, { color: colors.textMuted }]}>
+            Available on {game.platforms.join(', ')}
+          </Text>
+        )}
+        {game && <RawgAttribution url={rawgGameUrl(game.slug)} />}
       </ScrollView>
     );
   }
@@ -77,9 +88,24 @@ export const styles = StyleSheet.create({
   content: {
     padding: 20,
   },
+  cover: {
+    width: '100%',
+    aspectRatio: 16 / 9,
+    borderRadius: 14,
+    marginBottom: 16,
+  },
   title: {
     fontSize: 26,
     fontWeight: 'bold',
+  },
+  meta: {
+    fontSize: 15,
+    marginTop: 4,
+  },
+  platforms: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 12,
   },
   rating: {
     flexDirection: 'row',
