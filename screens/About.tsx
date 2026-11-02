@@ -3,9 +3,11 @@ import { Text, View, Image, ScrollView, StyleSheet } from 'react-native';
 import Constants from 'expo-constants';
 import Card from '../shared/card';
 import { useReviews } from '../hooks/useReviews';
+import { useAppTheme } from '../styles/theme';
 
 const About = () => {
     const { reviews } = useReviews();
+    const { colors } = useAppTheme();
     const averageRating = reviews.length
       ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
       : '–';
@@ -15,36 +17,37 @@ const About = () => {
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.hero}>
           <Image source={require('../assets/heart_logo.png')} style={styles.logo}/>
-          <Text style={styles.title}>GameZone</Text>
-          <Text style={styles.tagline}>Your personal log of game reviews.</Text>
+          <Text style={[styles.title, { color: colors.text }]}>GameZone</Text>
+          <Text style={[styles.tagline, { color: colors.textMuted }]}>Your personal log of game reviews.</Text>
         </View>
 
         <Card>
-          <Text style={styles.sectionTitle}>Your stats</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Your stats</Text>
           <View style={styles.stats}>
             <View style={styles.stat}>
-              <Text style={styles.statValue}>{reviews.length}</Text>
-              <Text style={styles.statLabel}>Reviews</Text>
+              <Text style={[styles.statValue, { color: colors.primary }]}>{reviews.length}</Text>
+              <Text style={[styles.statLabel, { color: colors.textMuted }]}>Reviews</Text>
             </View>
             <View style={styles.stat}>
-              <Text style={styles.statValue}>{averageRating}</Text>
-              <Text style={styles.statLabel}>Avg rating</Text>
+              <Text style={[styles.statValue, { color: colors.primary }]}>{averageRating}</Text>
+              <Text style={[styles.statLabel, { color: colors.textMuted }]}>Avg rating</Text>
             </View>
             <View style={styles.stat}>
-              <Text style={styles.statValue}>{topRated}</Text>
-              <Text style={styles.statLabel}>5-star games</Text>
+              <Text style={[styles.statValue, { color: colors.primary }]}>{topRated}</Text>
+              <Text style={[styles.statLabel, { color: colors.textMuted }]}>5-star games</Text>
             </View>
           </View>
         </Card>
 
         <Card>
-          <Text style={styles.sectionTitle}>How it works</Text>
-          <Text style={styles.paragraph}>• Tap + on the home screen to review a game and rate it from 1 to 5.</Text>
-          <Text style={styles.paragraph}>• Tap a review to read it, then use the pencil to edit it or the bin to delete it.</Text>
-          <Text style={styles.paragraph}>• Reviews are saved on this device, so they're still here next time you open the app.</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>How it works</Text>
+          <Text style={[styles.paragraph, { color: colors.text }]}>• Tap + on the home screen to review a game, then tap the hearts to rate it out of 5.</Text>
+          <Text style={[styles.paragraph, { color: colors.text }]}>• Tap a review to read it, then use the pencil to edit it or the bin to delete it.</Text>
+          <Text style={[styles.paragraph, { color: colors.text }]}>• Reviews are saved on this device, so they're still here next time you open the app.</Text>
+          <Text style={[styles.paragraph, { color: colors.text }]}>• Switch between light and dark mode from the Appearance setting in the menu.</Text>
         </Card>
 
-        <Text style={styles.version}>Version {Constants.expoConfig?.version ?? '1.0.0'}</Text>
+        <Text style={[styles.version, { color: colors.textMuted }]}>Version {Constants.expoConfig?.version ?? '1.0.0'}</Text>
       </ScrollView>
     );
   }
@@ -67,18 +70,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
     letterSpacing: 1,
   },
   tagline: {
     fontSize: 15,
-    color: '#666',
     marginTop: 4,
   },
   sectionTitle: {
     fontSize: 17,
     fontWeight: 'bold',
-    color: '#333',
     marginBottom: 12,
   },
   stats: {
@@ -91,22 +91,18 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#f01d71',
   },
   statLabel: {
     fontSize: 13,
-    color: '#666',
     marginTop: 2,
   },
   paragraph: {
     fontSize: 15,
     lineHeight: 22,
-    color: '#444',
     marginBottom: 6,
   },
   version: {
     textAlign: 'center',
-    color: '#999',
     marginTop: 16,
   },
 });

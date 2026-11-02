@@ -1,11 +1,12 @@
 import React, { useLayoutEffect, useState } from 'react';
-import { Text, View, Image, StyleSheet } from 'react-native';
+import { Text, View, ScrollView, StyleSheet } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { MaterialIcons } from '@expo/vector-icons';
-import { globalStyles, images } from '../styles/global';
 import Card from '../shared/card';
+import RatingHearts from '../shared/ratingHearts';
 import ReviewFormModal from '../shared/reviewFormModal';
 import { confirm } from '../shared/confirm';
+import { useAppTheme } from '../styles/theme';
 import type { HomeStackParamList } from '../routes/types';
 import type { ReviewInput } from '../types/review';
 import { useReviews } from '../hooks/useReviews';
@@ -14,6 +15,7 @@ type Props = NativeStackScreenProps<HomeStackParamList, 'ReviewDetails'>;
 
 const ReviewDetails = ({ route, navigation }: Props) => {
   const { reviews, updateReview, deleteReview } = useReviews();
+  const { colors } = useAppTheme();
   const [editing, setEditing] = useState(false);
   const review = reviews.find((r) => r.key === route.params.reviewKey);
 
@@ -35,8 +37,8 @@ const ReviewDetails = ({ route, navigation }: Props) => {
     navigation.setOptions({
       headerRight: () => (
         <View style={styles.headerActions}>
-          <MaterialIcons name="edit" size={24} color="#444" onPress={() => setEditing(true)} />
-          <MaterialIcons name="delete" size={24} color="#444" onPress={handleDelete} />
+          <MaterialIcons name="edit" size={24} color={colors.text} onPress={() => setEditing(true)} accessibilityLabel="Edit review" />
+          <MaterialIcons name="delete-outline" size={24} color={colors.danger} onPress={handleDelete} accessibilityLabel="Delete review" />
         </View>
       ),
     });
@@ -48,22 +50,23 @@ const ReviewDetails = ({ route, navigation }: Props) => {
 
   const { title, rating, body } = review;
     return (
-      <View style={globalStyles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
         <ReviewFormModal
+          title="Edit review"
           visible={editing}
           onClose={() => setEditing(false)}
           onSubmit={handleUpdate}
           initialReview={{ title, rating, body }}
         />
+        <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
+        <View style={styles.rating}>
+          <RatingHearts rating={rating} size={24} />
+          <Text style={[styles.ratingText, { color: colors.textMuted }]}>{rating} / 5</Text>
+        </View>
         <Card>
-          <Text>{title}</Text>
-          <Text>{body}</Text>
-          <View style={styles.rating}>
-            <Text>Gamezone rating</Text>
-            <Image source={images.ratings[rating]}/>
-          </View>
+          <Text style={[styles.body, { color: colors.text }]}>{body}</Text>
         </Card>
-      </View>
+      </ScrollView>
     );
   }
 
@@ -71,13 +74,26 @@ export default ReviewDetails;
 
 
 export const styles = StyleSheet.create({
-  rating:  {
+  content: {
+    padding: 20,
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+  },
+  rating: {
     flexDirection: 'row',
-    justifyContent: 'center',
-    paddingTop: 16,
-    marginTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee'
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 10,
+    marginBottom: 16,
+  },
+  ratingText: {
+    fontSize: 15,
+  },
+  body: {
+    fontSize: 16,
+    lineHeight: 24,
   },
   headerActions: {
     flexDirection: 'row',

@@ -1,34 +1,28 @@
 import React, { type ReactNode } from 'react';
 import { View, StyleSheet } from 'react-native';
+import { useAppTheme } from '../styles/theme';
 
 const Card = (props: { children: ReactNode }) => {
+    const { colors } = useAppTheme();
     return (
-        <View style={styles.card}>
-            <View style={styles.cardContent}>
-                {props.children}
-            </View>
+        <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            {props.children}
         </View>
     )
-
 }
 
 export default Card;
 
-
 const styles = StyleSheet.create({
     card: {
-        borderRadius: 6,
-        elevation: 3,
-        backgroundColor: '#fff',
-        shadowOffset: { width: 1, height: 1},
-        shadowColor: '#333',
-        shadowOpacity: 0.3,
-        shadowRadius: 2,
-        marginHorizontal: 4,
+        borderRadius: 14,
+        borderWidth: StyleSheet.hairlineWidth,
+        padding: 16,
         marginVertical: 6,
-    },
-    cardContent: {
-        marginHorizontal: 18,
-        marginVertical: 20
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.06,
+        shadowRadius: 8,
+        elevation: 2,
     },
 })
