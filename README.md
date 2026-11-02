@@ -94,6 +94,11 @@ You'll need a current LTS version of [Node.js](https://nodejs.org). To run on a 
 | `npm start` | Starts the Expo development server |
 | `npm run ios` / `npm run android` / `npm run web` | Starts and opens on that platform |
 | `npm run typecheck` | Checks the whole project with TypeScript |
+| `npm run build:web` | Builds the web version into `dist/` |
+
+### Deploying the web version
+
+The web build is a static site, so any static host works. The repo includes a [Render](https://render.com) Blueprint ([render.yaml](render.yaml)): in Render, choose **New → Blueprint**, select this repo, and optionally enter a RAWG key when asked.
 
 ## What's next
 

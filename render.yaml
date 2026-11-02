@@ -1,0 +1,13 @@
+# Render Blueprint: deploys the web version of GameZone as a static site.
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    runtime: static
+    name: gamezone
+    buildCommand: npm ci && npm run build:web
+    staticPublishPath: ./dist
+    envVars:
+      # Optional. Enables game search. Render asks for the value when you create the Blueprint;
+      # it is never stored in this file. Leave it empty to deploy without game search.
+      - key: EXPO_PUBLIC_RAWG_API_KEY
+        sync: false
