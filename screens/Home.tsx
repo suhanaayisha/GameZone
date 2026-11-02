@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard, FlatList, StyleSheet } from 'react-native';
+import { Text, View, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { globalStyles } from '../styles/global';
@@ -8,22 +8,16 @@ import { MaterialIcons } from '@expo/vector-icons';
 import ReviewForm from './ReviewForm';
 import type { HomeStackParamList } from '../routes/types';
 import type { Review } from '../types/review';
+import { useReviews } from '../hooks/useReviews';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'Home'>;
 
 const Home = ({ navigation }: Props) => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
-    const [reviews, setReviews] = useState<Review[]>([
-      { title: 'Zelda, Breath of Fresh Air', rating: 5, body: 'lorem ipsum', key: '1' },
-      { title: 'Gotta Catch Them All (again)', rating: 4, body: 'lorem ipsum', key: '2' },
-      { title: 'Not So "Final" Fantasy', rating: 3, body: 'lorem ipsum', key: '3' },
-    ]);
+    const { reviews, loaded, addReview: saveReview } = useReviews();
 
     const addReview = (review: Omit<Review, 'key'>) => {
-      const newReview = { ...review, key: Math.random().toString() };
-      setReviews((currentReviews) => {
-        return [newReview, ...currentReviews]
-      })
+      saveReview(review);
       setModalOpen(false);
     }
 
@@ -48,6 +42,7 @@ const Home = ({ navigation }: Props) => {
           onPress={() => setModalOpen(true)}
           style={styles.modalToggle}
         />
+        {!loaded && <ActivityIndicator />}
         <FlatList
           data={reviews}
           renderItem={({item}) => (
