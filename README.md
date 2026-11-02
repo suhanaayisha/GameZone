@@ -4,6 +4,8 @@ A mobile app for keeping a personal log of video game reviews. Search for any ga
 
 Built with **React Native**, **Expo** and **TypeScript**. Runs on iOS, Android and the web from a single codebase.
 
+**▶ [Try the live demo](https://gamezone-jv4w.onrender.com/)**: the web version, running in your browser. No install needed.
+
 <p align="center">
   <img src="docs/screenshots/home-light.png" width="200" alt="Home screen with review cards, search bar and sort options" />
   <img src="docs/screenshots/game-search.png" width="200" alt="Searching for a game while writing a review" />
