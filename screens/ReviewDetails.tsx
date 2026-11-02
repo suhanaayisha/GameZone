@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import Card from '../shared/card';
 import RatingHearts from '../shared/ratingHearts';
 import RawgAttribution from '../shared/rawgAttribution';
+import GameDetailsSection from '../shared/gameDetailsSection';
 import { rawgGameUrl } from '../api/rawg';
 import ReviewFormModal from '../shared/reviewFormModal';
 import { confirm } from '../shared/confirm';
@@ -71,11 +72,7 @@ const ReviewDetails = ({ route, navigation }: Props) => {
         <Card>
           <Text style={[styles.body, { color: colors.text }]}>{body}</Text>
         </Card>
-        {game && game.platforms.length > 0 && (
-          <Text style={[styles.platforms, { color: colors.textMuted }]}>
-            Available on {game.platforms.join(', ')}
-          </Text>
-        )}
+        {game && <GameDetailsSection game={game} />}
         {game && <RawgAttribution url={rawgGameUrl(game.slug)} />}
       </ScrollView>
     );
@@ -101,11 +98,6 @@ export const styles = StyleSheet.create({
   meta: {
     fontSize: 15,
     marginTop: 4,
-  },
-  platforms: {
-    fontSize: 14,
-    lineHeight: 20,
-    marginTop: 12,
   },
   rating: {
     flexDirection: 'row',
