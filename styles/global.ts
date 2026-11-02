@@ -1,18 +1,9 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, type ImageSourcePropType } from 'react-native';
 
 export const globalStyles = StyleSheet.create({
     container: {
         flex:1,
         padding: 24,
-    },
-    globalStyles: {
-        fontSize: 18,
-        fontFamily: 'nunito-bold',
-        color: "#333"
-    },
-    paragraph: {
-        marginVertical: 8,
-        lineHeight: 20,
     },
     input: {
         borderWidth: 1,
@@ -30,7 +21,7 @@ export const globalStyles = StyleSheet.create({
     }
   });
 
-export const images:any = {
+export const images: { ratings: Record<number, ImageSourcePropType> } = {
     ratings: {
         '1': require('../assets/rating-1.png'),
         '2': require('../assets/rating-2.png'),

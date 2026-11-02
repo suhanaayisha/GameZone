@@ -1,8 +1,8 @@
 import React from 'react';
-import { Text, View, Button } from 'react-native';
+import { Text, View } from 'react-native';
 import { globalStyles } from '../styles/global';
 
-const About = (props: any) => {
+const About = () => {
     return (
       <View style={globalStyles.container}>
         <Text>About Screen</Text>
@@ -10,4 +10,4 @@ const About = (props: any) => {
     );
   }
 
-export default About
+export default About;

@@ -1,11 +1,14 @@
 import React from 'react';
-import { Button, Text, View, Image } from 'react-native';
+import { Text, View, Image, StyleSheet } from 'react-native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { globalStyles, images } from '../styles/global';
 import Card from '../shared/card';
-import { StyleSheet } from 'react-native';
-const ReviewDetails = (props: any) => {
-  const { title, rating, body } = props.route.params;
-  const rating1=rating.toString();
+import type { HomeStackParamList } from '../routes/types';
+
+type Props = NativeStackScreenProps<HomeStackParamList, 'ReviewDetails'>;
+
+const ReviewDetails = ({ route }: Props) => {
+  const { title, rating, body } = route.params;
     return (
       <View style={globalStyles.container}>
         <Card>
@@ -13,7 +16,7 @@ const ReviewDetails = (props: any) => {
           <Text>{body}</Text>
           <View style={styles.rating}>
             <Text>Gamezone rating</Text>
-            <Image source={images.ratings[rating1]}/>
+            <Image source={images.ratings[rating]}/>
           </View>
         </Card>
       </View>
@@ -33,4 +36,3 @@ export const styles = StyleSheet.create({
     borderTopColor: '#eee'
   }
 });
-

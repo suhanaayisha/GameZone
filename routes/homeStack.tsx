@@ -1,29 +1,31 @@
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from '../screens/Home';
 import ReviewDetails from '../screens/ReviewDetails';
-import Header from '../shared/header';
+import Header, { MenuButton } from '../shared/header';
 import { Image } from 'react-native';
-const { Navigator, Screen } = createStackNavigator();
+import type { HomeStackParamList } from './types';
 
-export const HomeNavigator = (props:any) => (
-    <Navigator
+const { Navigator, Screen } = createNativeStackNavigator<HomeStackParamList>();
+
+export const HomeNavigator = () => (
+  <Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: "#eee",
-        height: 60,
+        backgroundColor: '#eee',
       },
-      headerTintColor: "#444",
+      headerTintColor: '#444',
     }}>
-      <Screen 
-        name="Home" 
-        component={Home} 
-        options={{ 
-          headerTitle: () => <Header title={'GameZone'} navigation={props.navigation}/>,
-          headerBackground: () => <Image source={require('../assets/game_bg.png')} style={{height:60}}/>
-        }} 
-      />
-      <Screen name="ReviewDetails" component={ReviewDetails} options={{ title: 'Reviews' }}/>
-    </Navigator>
+    <Screen
+      name="Home"
+      component={Home}
+      options={{
+        headerTitle: () => <Header title={'GameZone'} />,
+        headerTitleAlign: 'center',
+        headerLeft: () => <MenuButton />,
+        headerBackground: () => <Image source={require('../assets/game_bg.png')} style={{ width: '100%', height: '100%' }} />,
+      }}
+    />
+    <Screen name="ReviewDetails" component={ReviewDetails} options={{ title: 'Reviews' }} />
+  </Navigator>
 );
-  

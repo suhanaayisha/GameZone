@@ -1,19 +1,24 @@
-import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Modal, TextInput,  } from 'react-native';
-import { StyleSheet } from 'react-native';
+import React from 'react';
+import { Text, View, TextInput } from 'react-native';
 import { globalStyles } from '../styles/global';
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { DefaultButton as Button} from '../shared/button'
+import { DefaultButton as Button } from '../shared/button';
+import type { Review } from '../types/review';
 
 const ReviewSchema = yup.object({
     title: yup.string().required().min(4),
     body: yup.string().required().min(8),
-    rating: yup.string().required().test('is-num-1-5', 'rating must be a number between 1 to 5', (val:any) => {
-        return parseInt(val) < 6 && parseInt(val) > 0;
+    rating: yup.string().required().test('is-num-1-5', 'rating must be a number between 1 to 5', (val) => {
+        return parseInt(val, 10) < 6 && parseInt(val, 10) > 0;
     })
 })
-const ReviewForm = (props:any) => {
+
+type Props = {
+    addReview: (review: Omit<Review, 'key'>) => void;
+};
+
+const ReviewForm = ({ addReview }: Props) => {
    return(
        <View>
            <Formik
@@ -21,7 +26,7 @@ const ReviewForm = (props:any) => {
             validationSchema={ReviewSchema}
             onSubmit={(values, actions) => {
                 actions.resetForm()
-                props.addReview(values);
+                addReview({ ...values, rating: parseInt(values.rating, 10) });
             }}
            >
             {(props) => (

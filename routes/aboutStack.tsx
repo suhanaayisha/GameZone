@@ -1,23 +1,29 @@
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import About from '../screens/About';
-import Header from '../shared/header';
+import Header, { MenuButton } from '../shared/header';
 import { Image } from 'react-native';
+import type { AboutStackParamList } from './types';
 
-const { Navigator, Screen } = createStackNavigator();
+const { Navigator, Screen } = createNativeStackNavigator<AboutStackParamList>();
 
-export const AboutNavigator = (props: any) => (
-    <Navigator
+export const AboutNavigator = () => (
+  <Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: "#eee",
-        height: 60,
+        backgroundColor: '#eee',
       },
-      headerTintColor: "#444",
+      headerTintColor: '#444',
     }}>
-      <Screen name="About" component={About} options={{ 
-        headerTitle: () => <Header title={'About'} navigation={props.navigation}/>,
-        headerBackground: () => <Image source={require('../assets/game_bg.png')} style={{height:60}}/>
-        }} />
-    </Navigator>
+    <Screen
+      name="About"
+      component={About}
+      options={{
+        headerTitle: () => <Header title={'About'} />,
+        headerTitleAlign: 'center',
+        headerLeft: () => <MenuButton />,
+        headerBackground: () => <Image source={require('../assets/game_bg.png')} style={{ width: '100%', height: '100%' }} />,
+      }}
+    />
+  </Navigator>
 );

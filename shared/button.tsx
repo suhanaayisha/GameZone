@@ -1,7 +1,12 @@
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 
-export const DefaultButton = (props:any) => {
+type Props = {
+    text: string;
+    onPress: () => void;
+};
+
+export const DefaultButton = (props: Props) => {
     const { text, onPress } = props;
     return(
         <TouchableOpacity onPress={onPress}>

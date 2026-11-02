@@ -1,33 +1,37 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
+import { Text, View, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard, FlatList, StyleSheet } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { globalStyles } from '../styles/global';
 import Card from '../shared/card';
-import { StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import ReviewForm from './ReviewForm';
+import type { HomeStackParamList } from '../routes/types';
+import type { Review } from '../types/review';
 
-const Home = (props: any) => {
+type Props = NativeStackScreenProps<HomeStackParamList, 'Home'>;
+
+const Home = ({ navigation }: Props) => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
-    const [reviews, setReviews] = useState([
+    const [reviews, setReviews] = useState<Review[]>([
       { title: 'Zelda, Breath of Fresh Air', rating: 5, body: 'lorem ipsum', key: '1' },
       { title: 'Gotta Catch Them All (again)', rating: 4, body: 'lorem ipsum', key: '2' },
       { title: 'Not So "Final" Fantasy', rating: 3, body: 'lorem ipsum', key: '3' },
     ]);
 
-    const addReview = (review:any) => {
-      review.key = Math.random().toString();
-      setReviews((currenReviews) => {
-        return [review, ...currenReviews]
+    const addReview = (review: Omit<Review, 'key'>) => {
+      const newReview = { ...review, key: Math.random().toString() };
+      setReviews((currentReviews) => {
+        return [newReview, ...currentReviews]
       })
       setModalOpen(false);
     }
 
     return (
       <View style={globalStyles.container}>
-        <Modal visible={modalOpen} animationType='slide'>
+        <Modal visible={modalOpen} animationType='slide' onRequestClose={() => setModalOpen(false)}>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.modalContent}>
+          <SafeAreaView style={styles.modalContent}>
             <MaterialIcons
             name="close"
             size={24}
@@ -35,7 +39,7 @@ const Home = (props: any) => {
             style={{...styles.modalToggle, ...styles.modalClose}}
             />
             <ReviewForm addReview={addReview}/>
-          </View>
+          </SafeAreaView>
           </TouchableWithoutFeedback>
         </Modal>
         <MaterialIcons
@@ -47,7 +51,7 @@ const Home = (props: any) => {
         <FlatList
           data={reviews}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={() => props.navigation.navigate('ReviewDetails', item)}>
+            <TouchableOpacity onPress={() => navigation.navigate('ReviewDetails', item)}>
               <Card>
                 <Text>{item.title}</Text>
               </Card>
@@ -63,6 +67,7 @@ export default Home;
 export const styles = StyleSheet.create({
   modalContent:  {
     flex: 1,
+    padding: 24,
   },
   modalToggle: {
     justifyContent: 'center',

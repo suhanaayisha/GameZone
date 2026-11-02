@@ -1,7 +1,7 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import React, { type ReactNode } from 'react';
+import { View, StyleSheet } from 'react-native';
 
-const Card = (props:any) => {
+const Card = (props: { children: ReactNode }) => {
     return (
         <View style={styles.card}>
             <View style={styles.cardContent}>
