@@ -1,43 +1,46 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image, ImageBackground, ViewComponent } from 'react-native';
+import { Text, View, StyleSheet, Image } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
+import { useAppTheme } from '../styles/theme';
 
-const Header = (props: { title: string, navigation: any}) => {
+export const MenuButton = () => {
+    const navigation = useNavigation();
+    const { colors } = useAppTheme();
     const openMenu = () => {
-        props.navigation.openDrawer()
+        navigation.dispatch(DrawerActions.openDrawer());
     }
+    return <MaterialIcons name='menu' size={28} color={colors.text} onPress={openMenu} accessibilityLabel='Open menu' />;
+}
+
+// Doodle background in light mode; plain in dark mode, where the light image would glare.
+export const HeaderBackground = () => {
+    const { colors, isDark } = useAppTheme();
+    return (
+        <View style={[styles.background, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
+            {!isDark && <Image source={require('../assets/game_bg.png')} style={styles.backgroundImage} />}
+        </View>
+    )
+}
+
+const Header = (props: { title: string }) => {
+    const { colors } = useAppTheme();
     return(
-        <View style={styles.header}>
-            <MaterialIcons name='menu' size={28} onPress={() => openMenu()} style={styles.icon}/> 
-            <View style={styles.headerTitle}>
-                <Image source={require('../assets/heart_logo.png')} style={styles.headerImage}/>
-                <Text style={styles.headerText}>
-                    {props.title}
-                </Text>
-            </View>
+        <View style={styles.headerTitle}>
+            <Image source={require('../assets/heart_logo.png')} style={styles.headerImage}/>
+            <Text style={[styles.headerText, { color: colors.text }]}>
+                {props.title}
+            </Text>
         </View>
     )
 }
 export default Header;
 
 const styles = StyleSheet.create({
-    header: {
-        width: '100%',
-        height: '100%',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        // backgroundColor: '#ddd'
-    },
     headerText: {
         fontWeight: 'bold',
         fontSize: 20,
-        color: '#333',
         letterSpacing: 1,
-    },
-    icon: {
-        position: 'absolute',
-        left: 16
     },
     headerImage: {
         width: 26,
@@ -45,6 +48,16 @@ const styles = StyleSheet.create({
         marginHorizontal: 10
     },
     headerTitle: {
-        flexDirection: 'row'
-    }
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    background: {
+        flex: 1,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+    },
+    backgroundImage: {
+        width: '100%',
+        height: '100%',
+        opacity: 0.6,
+    },
 })

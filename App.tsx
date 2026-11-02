@@ -1,19 +1,17 @@
 import React from 'react';
-import { useFonts } from 'expo-font';
-import AppLoading from 'expo-app-loading';
-import { AppNavigator} from './routes/drawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { AppNavigator } from './routes/drawer';
+import { ReviewsProvider } from './hooks/useReviews';
+import { ThemeProvider } from './styles/theme';
 
 export default function App() {
-  let [fontsLoaded] = useFonts({
-    'nunito-bold': require('./assets/fonts/Nunito-Bold.ttf'),
-    'nunito-regular': require('./assets/fonts/Nunito-Regular.ttf'),
-  });
-  if (!fontsLoaded) {
-    return <AppLoading />;
-  } else {
-    return (
-      <AppNavigator/>
-    );
-  }
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider>
+        <ReviewsProvider>
+          <AppNavigator />
+        </ReviewsProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
+  );
 }
-
