@@ -1,41 +1,32 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity, Modal, TouchableWithoutFeedback, Keyboard, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Text, View, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { globalStyles } from '../styles/global';
 import Card from '../shared/card';
 import { MaterialIcons } from '@expo/vector-icons';
-import ReviewForm from './ReviewForm';
+import ReviewFormModal from '../shared/reviewFormModal';
 import type { HomeStackParamList } from '../routes/types';
-import type { Review } from '../types/review';
+import type { ReviewInput } from '../types/review';
 import { useReviews } from '../hooks/useReviews';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'Home'>;
 
 const Home = ({ navigation }: Props) => {
     const [modalOpen, setModalOpen] = useState<boolean>(false);
-    const { reviews, loaded, addReview: saveReview } = useReviews();
+    const { reviews, loaded, addReview } = useReviews();
 
-    const addReview = (review: Omit<Review, 'key'>) => {
-      saveReview(review);
+    const handleAdd = (review: ReviewInput) => {
+      addReview(review);
       setModalOpen(false);
     }
 
     return (
       <View style={globalStyles.container}>
-        <Modal visible={modalOpen} animationType='slide' onRequestClose={() => setModalOpen(false)}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <SafeAreaView style={styles.modalContent}>
-            <MaterialIcons
-            name="close"
-            size={24}
-            onPress={() => setModalOpen(false)}
-            style={{...styles.modalToggle, ...styles.modalClose}}
-            />
-            <ReviewForm addReview={addReview}/>
-          </SafeAreaView>
-          </TouchableWithoutFeedback>
-        </Modal>
+        <ReviewFormModal
+          visible={modalOpen}
+          onClose={() => setModalOpen(false)}
+          onSubmit={handleAdd}
+        />
         <MaterialIcons
           name="add"
           size={24}
@@ -46,7 +37,7 @@ const Home = ({ navigation }: Props) => {
         <FlatList
           data={reviews}
           renderItem={({item}) => (
-            <TouchableOpacity onPress={() => navigation.navigate('ReviewDetails', item)}>
+            <TouchableOpacity onPress={() => navigation.navigate('ReviewDetails', { reviewKey: item.key })}>
               <Card>
                 <Text>{item.title}</Text>
               </Card>
@@ -60,10 +51,6 @@ const Home = ({ navigation }: Props) => {
 export default Home;
 
 export const styles = StyleSheet.create({
-  modalContent:  {
-    flex: 1,
-    padding: 24,
-  },
   modalToggle: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -74,8 +61,4 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     alignSelf: 'center',
   },
-  modalClose: {
-    marginTop: 20,
-    marginBottom: 0,
-  }
 });

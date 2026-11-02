@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Review } from '../types/review';
+import type { Review, ReviewInput } from '../types/review';
 
 const STORAGE_KEY = 'gamezone:reviews';
 
@@ -11,7 +11,17 @@ const sampleReviews: Review[] = [
   { title: 'Not So "Final" Fantasy', rating: 3, body: 'lorem ipsum', key: '3' },
 ];
 
-export const useReviews = () => {
+type ReviewsContextValue = {
+  reviews: Review[];
+  loaded: boolean;
+  addReview: (review: ReviewInput) => void;
+  updateReview: (key: string, review: ReviewInput) => void;
+  deleteReview: (key: string) => void;
+};
+
+const ReviewsContext = createContext<ReviewsContextValue | null>(null);
+
+export const ReviewsProvider = ({ children }: { children: ReactNode }) => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -33,10 +43,32 @@ export const useReviews = () => {
     );
   }, [reviews, loaded]);
 
-  const addReview = (review: Omit<Review, 'key'>) => {
+  const addReview = (review: ReviewInput) => {
     const newReview = { ...review, key: Date.now().toString() };
     setReviews((currentReviews) => [newReview, ...currentReviews]);
   };
 
-  return { reviews, loaded, addReview };
+  const updateReview = (key: string, review: ReviewInput) => {
+    setReviews((currentReviews) =>
+      currentReviews.map((r) => (r.key === key ? { ...review, key } : r))
+    );
+  };
+
+  const deleteReview = (key: string) => {
+    setReviews((currentReviews) => currentReviews.filter((r) => r.key !== key));
+  };
+
+  return (
+    <ReviewsContext.Provider value={{ reviews, loaded, addReview, updateReview, deleteReview }}>
+      {children}
+    </ReviewsContext.Provider>
+  );
+};
+
+export const useReviews = () => {
+  const context = useContext(ReviewsContext);
+  if (!context) {
+    throw new Error('useReviews must be used inside ReviewsProvider');
+  }
+  return context;
 };

@@ -4,7 +4,7 @@ import { globalStyles } from '../styles/global';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { DefaultButton as Button } from '../shared/button';
-import type { Review } from '../types/review';
+import type { ReviewInput } from '../types/review';
 
 const ReviewSchema = yup.object({
     title: yup.string().required().min(4),
@@ -15,18 +15,23 @@ const ReviewSchema = yup.object({
 })
 
 type Props = {
-    addReview: (review: Omit<Review, 'key'>) => void;
+    onSubmit: (review: ReviewInput) => void;
+    initialReview?: ReviewInput;
 };
 
-const ReviewForm = ({ addReview }: Props) => {
+const ReviewForm = ({ onSubmit, initialReview }: Props) => {
    return(
        <View>
            <Formik
-            initialValues={{title:'', body: '', rating: ''}}
+            initialValues={{
+                title: initialReview?.title ?? '',
+                body: initialReview?.body ?? '',
+                rating: initialReview ? String(initialReview.rating) : '',
+            }}
             validationSchema={ReviewSchema}
             onSubmit={(values, actions) => {
                 actions.resetForm()
-                addReview({ ...values, rating: parseInt(values.rating, 10) });
+                onSubmit({ ...values, rating: parseInt(values.rating, 10) });
             }}
            >
             {(props) => (

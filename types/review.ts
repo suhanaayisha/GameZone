@@ -4,3 +4,5 @@ export type Review = {
   body: string;
   rating: number;
 };
+
+export type ReviewInput = Omit<Review, 'key'>;

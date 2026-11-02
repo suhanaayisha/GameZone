@@ -1,9 +1,8 @@
 import type { NavigatorScreenParams } from '@react-navigation/native';
-import type { Review } from '../types/review';
 
 export type HomeStackParamList = {
   Home: undefined;
-  ReviewDetails: Review;
+  ReviewDetails: { reviewKey: string };
 };
 
 export type AboutStackParamList = {
